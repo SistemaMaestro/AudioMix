@@ -21,7 +21,13 @@
       "Bash(curl -s -o /dev/null -w \"index=%{http_code} aux=\" http://127.0.0.1:8000/)",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://127.0.0.1:8000/aux)",
       "Bash(rm -f server.py static/index.html static/aux.html)",
-      "Bash(rmdir static *)"
+      "Bash(rmdir static *)",
+      "Bash(python -m audiomix.config)",
+      "Bash(python -c \"from audiomix.app import create_app; from audiomix.config import load_settings; app = create_app\\(load_settings\\(\\)\\); print\\('app built OK — routes:', len\\(app.routes\\)\\)\")",
+      "Bash(python AudioMix.py)",
+      "Bash(curl -s http://127.0.0.1:47900/api/ping)",
+      "Bash(curl -s http://127.0.0.1:47900/admin/api/status)",
+      "Bash(npx tsc *)"
     ]
   }
 }

@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8" />
+<title>AudioMix · Admin</title>
+<link rel="stylesheet" href="/admin/static/admin.css">
+</head>
+<body>
+<header>
+  <h1>🎛️ AudioMix Admin</h1>
+  <span class="ver">v{{ version }}</span>
+  <div class="mixer-status" id="mixerStatus">
+    <span class="dot" id="mixerDot"></span>
+    <span id="mixerText">conectando…</span>
+  </div>
+</header>
+
+<section class="card">
+  <h2>Mesa</h2>
+  <table class="kv">
+    <tr><th>Status</th><td id="mxConnected">—</td></tr>
+    <tr><th>Host</th><td id="mxHost">—</td></tr>
+    <tr><th>Nome</th><td id="mxName">—</td></tr>
+    <tr><th>Serial</th><td id="mxSerial">—</td></tr>
+    <tr><th>State keys</th><td id="mxKeys">—</td></tr>
+    <tr><th>Falhas de conexão</th><td id="mxFails">—</td></tr>
+    <tr><th>Último erro</th><td id="mxError">—</td></tr>
+  </table>
+</section>
+
+<section class="card">
+  <h2>Sessões ativas <span id="sessCount" class="pill">0</span></h2>
+  <table class="sessions">
+    <thead>
+      <tr>
+        <th>Aux</th><th>Nome do aux</th><th>Usuário</th><th>IP</th>
+        <th>Desde</th><th>Expira em</th><th></th>
+      </tr>
+    </thead>
+    <tbody id="sessBody">
+      <tr><td colspan="7" class="muted">sem sessões ativas</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<footer>
+  <span class="muted">auto-refresh 1s · admin só aceita conexões de localhost</span>
+</footer>
+
+<script>
+async function tick() {
+  try {
+    const r = await fetch('/admin/api/status');
+    const d = await r.json();
+    const mx = d.mixer || {};
+    document.getElementById('mixerDot').className = 'dot ' + (mx.connected ? 'ok' : 'bad');
+    document.getElementById('mixerText').textContent = mx.connected ? 'mesa conectada' : 'mesa desconectada';
+    document.getElementById('mxConnected').textContent = mx.connected ? '✅ online' : '❌ offline';
+    document.getElementById('mxHost').textContent = (mx.host ?? '—') + (mx.port ? ':' + mx.port : '');
+    document.getElementById('mxName').textContent = mx.name ?? '—';
+    document.getElementById('mxSerial').textContent = mx.serial ?? '—';
+    document.getElementById('mxKeys').textContent = mx.state_keys ?? '—';
+    document.getElementById('mxFails').textContent = mx.connect_failures ?? 0;
+    document.getElementById('mxError').textContent = mx.last_error ?? '—';
+
+    const sess = d.sessions || [];
+    document.getElementById('sessCount').textContent = sess.length;
+    const tb = document.getElementById('sessBody');
+    if (!sess.length) {
+      tb.innerHTML = '<tr><td colspan="7" class="muted">sem sessões ativas</td></tr>';
+    } else {
+      tb.innerHTML = sess.map(s => `
+        <tr>
+          <td><b>${s.aux_number}</b></td>
+          <td>${escape(s.aux_name)}</td>
+          <td>${escape(s.user_name)}<br><span class="muted">${escape(s.user_id)}</span></td>
+          <td>${escape(s.client_ip)}</td>
+          <td>${new Date(s.claimed_at).toLocaleTimeString()}</td>
+          <td>${s.expires_in}s</td>
+          <td><button onclick="kick(${s.aux_number})">kick</button></td>
+        </tr>`).join('');
+    }
+  } catch (e) {
+    document.getElementById('mixerText').textContent = 'erro comunicação: ' + e.message;
+  }
+}
+function escape(s){ return String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+async function kick(aux) {
+  if (!confirm('Liberar aux ' + aux + '?')) return;
+  await fetch('/admin/api/release/' + aux, {method: 'POST'});
+  tick();
+}
+setInterval(tick, 1000); tick();
+</script>
+</body>
+</html>

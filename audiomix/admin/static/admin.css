@@ -1,0 +1,53 @@
+:root { color-scheme: dark; }
+* { box-sizing: border-box; }
+body {
+  font: 14px system-ui, sans-serif; margin: 0; background: #0f0f11; color: #eee;
+}
+header {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 24px; background: #1a1a1f; border-bottom: 1px solid #2a2a30;
+  position: sticky; top: 0; z-index: 10;
+}
+header h1 { margin: 0; font-size: 18px; }
+header .ver { color: #888; font-size: 12px; }
+.mixer-status { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #555; }
+.dot.ok { background: #2a5; box-shadow: 0 0 8px rgba(40,170,80,.6); }
+.dot.bad { background: #c33; }
+
+.card {
+  background: #17171c; border: 1px solid #25252c; border-radius: 10px;
+  margin: 16px 24px; padding: 16px 20px;
+}
+.card h2 {
+  margin: 0 0 12px; font-size: 14px; text-transform: uppercase;
+  letter-spacing: .08em; color: #aaa; display: flex; align-items: center; gap: 10px;
+}
+.pill {
+  background: #2a2a33; color: #eee; padding: 2px 10px;
+  border-radius: 999px; font-size: 12px; letter-spacing: 0;
+}
+
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+table.kv th {
+  text-align: left; color: #888; font-weight: 500; padding: 6px 16px 6px 0;
+  width: 180px; border-bottom: 1px solid #222;
+}
+table.kv td { padding: 6px 0; border-bottom: 1px solid #222; font-family: ui-monospace, monospace; }
+
+table.sessions th {
+  text-align: left; padding: 8px 10px; color: #888; font-weight: 500;
+  border-bottom: 1px solid #2a2a32; font-size: 12px; text-transform: uppercase;
+}
+table.sessions td {
+  padding: 10px; border-bottom: 1px solid #1e1e24; vertical-align: top;
+}
+.muted { color: #666; }
+
+button {
+  background: #c33; color: #fff; border: 0; padding: 4px 10px;
+  border-radius: 4px; cursor: pointer; font: inherit;
+}
+button:hover { background: #e44; }
+
+footer { color: #666; text-align: center; padding: 24px; font-size: 12px; }

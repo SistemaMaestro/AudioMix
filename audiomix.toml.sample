@@ -1,0 +1,39 @@
+# AudioMix configuration — copy to audiomix.toml and adjust.
+# Env overrides: AUDIOMIX_SERVER__PORT=47900 (note the double underscore).
+
+[server]
+host = "0.0.0.0"
+port = 47900
+admin_only_localhost = true
+allowed_cors_origins = [
+  "https://ipb.app.br",
+  "https://www.ipb.app.br",
+  "http://localhost:3000",
+  "http://localhost:5173",
+]
+
+[mixer]
+# Empty = auto-discover on UDP 47809. Set to pin a specific IP.
+host = ""
+port = 53000
+discovery_timeout_seconds = 8.0
+
+[maestro]
+base_url = "https://api.ipb.app.br/api"
+token_cache_ttl_seconds = 300
+verify_token_path = "/Auth/verificar-token"
+request_timeout_seconds = 10.0
+
+[session]
+heartbeat_seconds = 5
+ttl_seconds = 15
+
+[storage]
+db_path = "%LOCALAPPDATA%/AudioMix/audiomix.db"
+log_path = "%LOCALAPPDATA%/AudioMix/logs/audiomix.log"
+
+[mdns]
+enabled = true
+service_type = "_audiomix._tcp.local."
+instance_name = "AudioMix"
+hostname = "audiomix.local."
