@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:featherbear.cc)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(curl -s \"https://api.github.com/repos/featherbear/presonus-studiolive-api/git/trees/master?recursive=1\")",
+      "Bash(python -c \"import json,sys; d=json.load\\(sys.stdin\\); [print\\(t['path']\\) for t in d['tree'] if t['type']=='blob' and t['path'].startswith\\('src/'\\)]\")",
+      "Bash(curl -s https://raw.githubusercontent.com/featherbear/presonus-studiolive-api/master/__TRACKED_VAR__)",
+      "Bash(python -c \"import asyncio; from studiolive.discovery import discover; print\\(asyncio.run\\(discover\\(timeout=8.0\\)\\)\\)\")",
+      "Bash(python)",
+      "Bash(python -c \"import asyncio; from studiolive.discovery import discover; import json; print\\(json.dumps\\(asyncio.run\\(discover\\(timeout=8.0\\)\\), indent=2\\)\\)\")",
+      "Bash(python -m pip install -q -r requirements.txt)",
+      "Bash(python server.py)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://127.0.0.1:8000/)",
+      "Bash(curl -s http://127.0.0.1:8000/api/status)",
+      "Bash(curl -s -o /dev/null -w \"index=%{http_code} \" http://127.0.0.1:8000/)",
+      "Bash(curl -s -o /dev/null -w \"aux=%{http_code}\\\\n\" http://127.0.0.1:8000/aux)",
+      "PowerShell(Get-NetTCPConnection *)",
+      "Bash(curl -s -o /dev/null -w \"index=%{http_code} aux=\" http://127.0.0.1:8000/)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://127.0.0.1:8000/aux)",
+      "Bash(rm -f server.py static/index.html static/aux.html)",
+      "Bash(rmdir static *)"
+    ]
+  }
+}
