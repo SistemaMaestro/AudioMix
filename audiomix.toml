@@ -1,0 +1,3 @@
+[tls]
+cert_file = "C:\\audiomix.ipb.app.br-chain.pem"
+key_file  = "C:\\audiomix.ipb.app.br-key.pem"
