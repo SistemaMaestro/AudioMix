@@ -28,6 +28,7 @@ class MaestroUser:
     id: str
     name: str
     email: Optional[str] = None
+    can_mix: bool = True  # fail-open: True when field absent or API unreachable
 
 
 @dataclass
@@ -117,7 +118,12 @@ class MaestroAuth:
         if not uid or not nome:
             log.warning("maestro missing id/nome fields for %s", _mask_token(token))
             return None
-        return MaestroUser(id=str(uid), name=str(nome), email=u.get("email"))
+        return MaestroUser(
+            id=str(uid),
+            name=str(nome),
+            email=u.get("email"),
+            can_mix=bool(u.get("podeUsarMixer", True)),
+        )
 
     def invalidate(self, token: str):
         self._cache.pop(token, None)
