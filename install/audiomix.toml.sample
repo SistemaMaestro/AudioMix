@@ -1,0 +1,35 @@
+# audiomix.toml — copy to "C:\Projetos GIT\AudioMix\audiomix.toml" and edit.
+# All values below are the defaults; uncomment only what you need to change.
+
+[server]
+# host = "0.0.0.0"
+# port = 47900
+# admin_only_localhost = true
+
+[mixer]
+# Leave host empty for automatic UDP discovery (recommended).
+# host = "10.100.0.5"
+# port = 53000
+
+[maestro]
+# base_url = "https://api.ipb.app.br/api"
+# verify_token_path = "/Auth/verificar-token"
+# token_cache_ttl_seconds = 300
+# request_timeout_seconds = 5
+
+[session]
+# heartbeat_seconds = 5
+# ttl_seconds = 15
+
+[storage]
+# db_path  = "%LOCALAPPDATA%/AudioMix/audiomix.db"
+# log_path = "%LOCALAPPDATA%/AudioMix/logs/audiomix.log"
+
+[mdns]
+# enabled = true
+# service_name = "audiomix"
+# hostname = "audiomix.local"
+
+[cors]
+# Extra origins to allow besides the defaults (ipb.app.br, localhost).
+# extra_origins = []

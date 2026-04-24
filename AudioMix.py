@@ -14,6 +14,7 @@ from pathlib import Path
 import uvicorn
 
 from audiomix.app import create_app
+from audiomix.cert import ensure_cert
 from audiomix.config import load_settings
 
 
@@ -50,12 +51,24 @@ def main():
     log.info("db:   %s", settings.storage.db_path_resolved)
 
     app = create_app(settings)
+
+    cert_dir = settings.storage.db_path_resolved.parent
+    cert_path, key_path = ensure_cert(cert_dir)
+    log.info("HTTPS cert: %s", cert_path)
+    log.info(
+        "⚠️  First time on a new device: open https://audiomix.local:%d "
+        "in the browser and accept the certificate warning.",
+        settings.server.port,
+    )
+
     uvicorn.run(
         app,
         host=settings.server.host,
         port=settings.server.port,
         log_level="info",
         access_log=False,
+        ssl_certfile=str(cert_path),
+        ssl_keyfile=str(key_path),
     )
 
 
