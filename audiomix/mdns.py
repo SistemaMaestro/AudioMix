@@ -7,11 +7,13 @@ via mDNS/mDNSResponder.
 """
 from __future__ import annotations
 
+import asyncio
 import logging
 import socket
 from typing import Optional
 
 from zeroconf import ServiceInfo
+from zeroconf._exceptions import NonUniqueNameException
 from zeroconf.asyncio import AsyncZeroconf
 
 from .config import MdnsConfig
@@ -55,8 +57,24 @@ class MdnsAdvertiser:
                 "service": "audiomix",
             },
         )
-        self._zc = AsyncZeroconf()
-        await self._zc.async_register_service(self._info)
+        # Retry loop: a previous instance may have left a stale record if its
+        # goodbye packet hadn't finished propagating when it was killed.
+        for attempt in range(3):
+            self._zc = AsyncZeroconf()
+            try:
+                await self._zc.async_register_service(self._info)
+                break
+            except NonUniqueNameException:
+                await self._zc.async_close()
+                self._zc = None
+                if attempt < 2:
+                    wait = (attempt + 1) * 3
+                    log.warning(
+                        "mDNS: name conflict (stale record?), retrying in %ds...", wait
+                    )
+                    await asyncio.sleep(wait)
+                else:
+                    raise
         log.info("mDNS registered: %s -> %s:%s", self.cfg.hostname, ip, self.port)
 
     async def stop(self):
