@@ -217,7 +217,6 @@ async def mixer_channels(
 async def mixer_auxes(
     mixer: Annotated[MixerLink, Depends(get_mixer)],
     sessions: Annotated[SessionManager, Depends(get_sessions)],
-    sess: Annotated[AuxSession, Depends(require_session)],
 ):
     if not mixer.connected:
         raise HTTPException(status_code=503, detail={
