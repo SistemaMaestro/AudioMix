@@ -72,6 +72,24 @@ class MdnsConfig(BaseModel):
     hostname: str = "audiomix.local."
 
 
+class TlsConfig(BaseModel):
+    cert_file: str = ""  # path to PEM cert/chain; empty = use self-signed
+    key_file: str = ""   # path to PEM private key; empty = use self-signed
+
+    @property
+    def cert_path(self) -> Optional[Path]:
+        return _expand(self.cert_file) if self.cert_file else None
+
+    @property
+    def key_path(self) -> Optional[Path]:
+        return _expand(self.key_file) if self.key_file else None
+
+    @property
+    def is_external(self) -> bool:
+        p, k = self.cert_path, self.key_path
+        return bool(p and k and p.exists() and k.exists())
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_prefix="AUDIOMIX_",
@@ -85,6 +103,7 @@ class Settings(BaseSettings):
     session: SessionConfig = SessionConfig()
     storage: StorageConfig = StorageConfig()
     mdns: MdnsConfig = MdnsConfig()
+    tls: TlsConfig = TlsConfig()
 
 
 def _config_candidates() -> list[Path]:

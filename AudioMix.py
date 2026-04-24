@@ -52,14 +52,19 @@ def main():
 
     app = create_app(settings)
 
-    cert_dir = settings.storage.db_path_resolved.parent
-    cert_path, key_path = ensure_cert(cert_dir)
-    log.info("HTTPS cert: %s", cert_path)
-    log.info(
-        "⚠️  First time on a new device: open https://audiomix.local:%d "
-        "in the browser and accept the certificate warning.",
-        settings.server.port,
-    )
+    if settings.tls.is_external:
+        cert_path = settings.tls.cert_path
+        key_path = settings.tls.key_path
+        log.info("HTTPS cert: %s (Let's Encrypt)", cert_path)
+    else:
+        cert_dir = settings.storage.db_path_resolved.parent
+        cert_path, key_path = ensure_cert(cert_dir)
+        log.info("HTTPS cert: %s (self-signed)", cert_path)
+        log.info(
+            "⚠️  First time on a new device: open https://audiomix.local:%d "
+            "in the browser and accept the certificate warning.",
+            settings.server.port,
+        )
 
     uvicorn.run(
         app,

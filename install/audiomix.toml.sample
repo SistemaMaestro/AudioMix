@@ -30,6 +30,12 @@
 # service_name = "audiomix"
 # hostname = "audiomix.local"
 
+[tls]
+# Paths to a trusted certificate (e.g. Let's Encrypt via win-acme / acme-dns).
+# When set and files exist, the self-signed cert is NOT used.
+# cert_file = "C:\\audiomix.ipb.app.br-chain.pem"
+# key_file  = "C:\\audiomix.ipb.app.br-key.pem"
+
 [cors]
 # Extra origins to allow besides the defaults (ipb.app.br, localhost).
 # extra_origins = []
