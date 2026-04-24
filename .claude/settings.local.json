@@ -27,7 +27,28 @@
       "Bash(python AudioMix.py)",
       "Bash(curl -s http://127.0.0.1:47900/api/ping)",
       "Bash(curl -s http://127.0.0.1:47900/admin/api/status)",
-      "Bash(npx tsc *)"
+      "Bash(npx tsc *)",
+      "Bash(python -m pytest tests/test_protocol.py -v)",
+      "Bash(psql *)",
+      "Bash(python *)",
+      "Bash(mkdir -p \"C:\\\\Projetos GIT\\\\MaestroApp\\\\ipb.pwa.maestro\\\\src\\\\services\\\\audiomix\")",
+      "Bash(mkdir -p \"C:\\\\Projetos GIT\\\\MaestroApp\\\\ipb.pwa.maestro\\\\src\\\\pages\\\\Mixer\")",
+      "Bash(cp \"C:\\\\Projetos GIT\\\\MaestroApp\\\\maestro2\\\\src\\\\services\\\\audiomix\\\\config.ts\" \"C:\\\\Projetos GIT\\\\MaestroApp\\\\ipb.pwa.maestro\\\\src\\\\services\\\\audiomix\\\\config.ts\")",
+      "Bash(cp \"C:\\\\Projetos GIT\\\\MaestroApp\\\\maestro2\\\\src\\\\services\\\\audiomix\\\\discovery.ts\" \"C:\\\\Projetos GIT\\\\MaestroApp\\\\ipb.pwa.maestro\\\\src\\\\services\\\\audiomix\\\\discovery.ts\")",
+      "Bash(cp \"C:\\\\Projetos GIT\\\\MaestroApp\\\\maestro2\\\\src\\\\services\\\\audiomix\\\\client.ts\" \"C:\\\\Projetos GIT\\\\MaestroApp\\\\ipb.pwa.maestro\\\\src\\\\services\\\\audiomix\\\\client.ts\")",
+      "Bash(cp \"C:\\\\Projetos GIT\\\\MaestroApp\\\\maestro2\\\\src\\\\componentes\\\\FloatingActionButton.tsx\" \"C:\\\\Projetos GIT\\\\MaestroApp\\\\ipb.pwa.maestro\\\\src\\\\componentes\\\\FloatingActionButton.tsx\")",
+      "Bash(cp \"C:\\\\Projetos GIT\\\\MaestroApp\\\\maestro2\\\\src\\\\componentes\\\\FloatingActionButton.css\" \"C:\\\\Projetos GIT\\\\MaestroApp\\\\ipb.pwa.maestro\\\\src\\\\componentes\\\\FloatingActionButton.css\")",
+      "Bash(cp \"C:\\\\Projetos GIT\\\\MaestroApp\\\\maestro2\\\\src\\\\componentes\\\\MixerFAB.tsx\" \"C:\\\\Projetos GIT\\\\MaestroApp\\\\ipb.pwa.maestro\\\\src\\\\componentes\\\\MixerFAB.tsx\")",
+      "Bash(cp \"C:\\\\Projetos GIT\\\\MaestroApp\\\\maestro2\\\\src\\\\pages\\\\Mixer\\\\Mixer.tsx\" \"C:\\\\Projetos GIT\\\\MaestroApp\\\\ipb.pwa.maestro\\\\src\\\\pages\\\\Mixer\\\\Mixer.tsx\")",
+      "Bash(cp \"C:\\\\Projetos GIT\\\\MaestroApp\\\\maestro2\\\\src\\\\pages\\\\Mixer\\\\Mixer.css\" \"C:\\\\Projetos GIT\\\\MaestroApp\\\\ipb.pwa.maestro\\\\src\\\\pages\\\\Mixer\\\\Mixer.css\")",
+      "Bash(cp \"C:\\\\Projetos GIT\\\\MaestroApp\\\\maestro2\\\\src\\\\pages\\\\Mixer\\\\ChannelStrip.tsx\" \"C:\\\\Projetos GIT\\\\MaestroApp\\\\ipb.pwa.maestro\\\\src\\\\pages\\\\Mixer\\\\ChannelStrip.tsx\")",
+      "Bash(cp \"C:\\\\Projetos GIT\\\\MaestroApp\\\\maestro2\\\\src\\\\pages\\\\Mixer\\\\AuxPicker.tsx\" \"C:\\\\Projetos GIT\\\\MaestroApp\\\\ipb.pwa.maestro\\\\src\\\\pages\\\\Mixer\\\\AuxPicker.tsx\")",
+      "Bash(cp \"C:\\\\Projetos GIT\\\\MaestroApp\\\\maestro2\\\\src\\\\pages\\\\Mixer\\\\PresetPicker.tsx\" \"C:\\\\Projetos GIT\\\\MaestroApp\\\\ipb.pwa.maestro\\\\src\\\\pages\\\\Mixer\\\\PresetPicker.tsx\")",
+      "PowerShell($r = & \"C:\\\\Projetos GIT\\\\MaestroApp\\\\ipb.pwa.maestro\\\\node_modules\\\\.bin\\\\tsc.cmd\" --noEmit --project \"C:\\\\Projetos GIT\\\\MaestroApp\\\\ipb.pwa.maestro\\\\tsconfig.json\" 2>&1; $r | Select-Object -First 60; Write-Host \"Exit: $LASTEXITCODE\")",
+      "PowerShell($r = & \"C:\\\\Projetos GIT\\\\MaestroApp\\\\ipb.pwa.maestro\\\\node_modules\\\\.bin\\\\tsc.cmd\" --noEmit --project \"C:\\\\Projetos GIT\\\\MaestroApp\\\\ipb.pwa.maestro\\\\tsconfig.json\" 2>&1; $r | Select-Object -First 30; Write-Host \"Exit: $LASTEXITCODE\")",
+      "PowerShell($r = & \"C:\\\\Projetos GIT\\\\MaestroApp\\\\ipb.pwa.maestro\\\\node_modules\\\\.bin\\\\tsc.cmd\" --noEmit --project \"C:\\\\Projetos GIT\\\\MaestroApp\\\\ipb.pwa.maestro\\\\tsconfig.json\" 2>&1; $r | Select-Object -First 20; Write-Host \"Exit: $LASTEXITCODE\")",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
     ]
   }
 }
