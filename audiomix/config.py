@@ -28,6 +28,7 @@ class ServerConfig(BaseModel):
         default_factory=lambda: [
             "https://ipb.app.br",
             "https://www.ipb.app.br",
+            "https://maestro.ipbrecreio.org.br",
             "http://localhost:3000",
             "http://localhost:5173",
         ]
