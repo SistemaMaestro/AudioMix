@@ -114,11 +114,6 @@ async def claim(
             "ok": False, "reason": "INVALID_TOKEN",
             "message": "token rejeitado pelo Maestro",
         })
-    if not user.can_mix:
-        raise HTTPException(status_code=403, detail={
-            "ok": False, "reason": "NOT_SCHEDULED",
-            "message": "Você não está escalado para um culto nas próximas 3 horas.",
-        })
     client_ip = request.client.host if request.client else "?"
     try:
         sess = await sessions.claim(user, body.aux_number, client_ip)
