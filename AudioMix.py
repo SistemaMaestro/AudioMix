@@ -72,6 +72,10 @@ def main():
         port=settings.server.port,
         log_level="info",
         access_log=False,
+        # uvloop (pulled by uvicorn[standard] on Linux) doesn't implement
+        # loop.sock_recvfrom, which UCNET UDP discovery relies on. Force the
+        # stock asyncio loop so the studiolive layer behaves as on Windows.
+        loop="asyncio",
         ssl_certfile=str(cert_path),
         ssl_keyfile=str(key_path),
     )

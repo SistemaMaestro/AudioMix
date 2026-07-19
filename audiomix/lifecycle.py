@@ -14,6 +14,7 @@ from fastapi import FastAPI
 from .config import Settings
 from .mixer_link import MixerLink
 from .auth import MaestroAuth
+from .admin_auth import AdminAuth
 from .sessions import SessionManager
 from .presets import PresetRepo
 from .mdns import MdnsAdvertiser
@@ -29,12 +30,14 @@ async def lifespan(app: FastAPI):
 
     mixer = MixerLink(settings.mixer)
     auth = MaestroAuth(settings.maestro)
+    admin_auth = AdminAuth(auth, settings.storage.db_path_resolved.parent)
     sessions = SessionManager(settings.session)
     presets = PresetRepo(settings.storage.db_path_resolved)
     mdns = MdnsAdvertiser(settings.mdns, settings.server.port, __version__)
 
     app.state.mixer = mixer
     app.state.auth = auth
+    app.state.admin_auth = admin_auth
     app.state.sessions = sessions
     app.state.presets = presets
     app.state.mdns = mdns

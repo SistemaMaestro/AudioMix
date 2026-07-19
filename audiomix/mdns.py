@@ -60,7 +60,10 @@ class MdnsAdvertiser:
         # Retry loop: a previous instance may have left a stale record if its
         # goodbye packet hadn't finished propagating when it was killed.
         for attempt in range(3):
-            self._zc = AsyncZeroconf()
+            # Bind only to the LAN interface. Advertising on every interface
+            # makes zeroconf try multicast on the WireGuard link (no IGMP
+            # support), which spams "[Errno 126] Required key not available".
+            self._zc = AsyncZeroconf(interfaces=[ip])
             try:
                 await self._zc.async_register_service(self._info)
                 break

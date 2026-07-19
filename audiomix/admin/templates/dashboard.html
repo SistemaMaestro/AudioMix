@@ -2,95 +2,444 @@
 <html lang="pt-br">
 <head>
 <meta charset="utf-8" />
-<title>AudioMix · Admin</title>
-<link rel="stylesheet" href="/admin/static/admin.css">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="color-scheme" content="light" />
+<title>AudioMix · Retorno</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bree+Serif&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bordo:#350100; --vinho:#610B00; --coral:#FF5D2B; --coral-2:#FF8A5D;
+    --creme:#FFCBA4; --bg:#F5EEE6; --card:#FFFFFF; --ink:#2C1512;
+    --muted:#93817a; --line:#ece2d8; --track:#efe6dd;
+    --ok:#3F9A6B; --bad:#D54C4C;
+    --marca:linear-gradient(90deg,#FF5D2B,#FF8A5D,#FFCBA4);
+    --shadow:0 8px 26px rgba(53,1,0,.10);
+    --serif:'Bree Serif',Georgia,serif;
+    --sans:'Montserrat',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{font-family:var(--sans); color:var(--ink); background:var(--bg); -webkit-font-smoothing:antialiased; line-height:1.4}
+
+  .topbar{position:sticky; top:0; z-index:20; display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+    padding:14px clamp(16px,4vw,34px); background:linear-gradient(120deg,var(--bordo),var(--vinho));
+    color:#fff; box-shadow:0 6px 20px rgba(53,1,0,.28)}
+  .brand{display:flex; align-items:center; gap:13px; min-width:0}
+  .brand-mark{width:42px; height:42px; border-radius:13px; flex:none;
+    background:linear-gradient(135deg,var(--coral),var(--coral-2)); display:grid; place-items:center;
+    box-shadow:0 4px 12px rgba(255,93,43,.4)}
+  .brand-mark svg{width:23px; height:auto; display:block}
+  .brand-text{display:flex; flex-direction:column; line-height:1.05; min-width:0}
+  .brand-name{font-family:var(--serif); font-size:22px; letter-spacing:.3px}
+  .brand-sub{font-size:10.5px; text-transform:uppercase; letter-spacing:.22em; color:var(--creme); margin-top:3px}
+  .top-right{margin-left:auto; display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+  .mesa{display:flex; align-items:center; gap:9px; background:rgba(255,255,255,.10);
+    border:1px solid rgba(255,203,164,.22); padding:8px 14px; border-radius:999px; font-size:13px; font-weight:500; white-space:nowrap}
+  .dot{width:9px; height:9px; border-radius:50%; background:var(--muted); flex:none}
+  .dot.ok{background:var(--ok); box-shadow:0 0 0 4px rgba(63,154,107,.20)}
+  .dot.bad{background:var(--bad); box-shadow:0 0 0 4px rgba(213,76,76,.20)}
+  .ver{font-size:11px; color:var(--creme); opacity:.75}
+
+  /* auth control in topbar */
+  .authchip{display:flex; align-items:center; gap:10px; font-size:13px; white-space:nowrap}
+  .btn{font:inherit; font-weight:600; font-size:13px; border-radius:11px; padding:9px 15px; cursor:pointer;
+    border:1px solid transparent; transition:filter .15s, background .15s}
+  .btn:focus-visible{outline:3px solid #fff; outline-offset:2px}
+  .btn-enter{background:var(--coral); color:#fff}
+  .btn-enter:hover{filter:brightness(1.06)}
+  .btn-ghost{background:rgba(255,255,255,.12); color:#fff; border-color:rgba(255,203,164,.3)}
+  .btn-ghost:hover{background:rgba(255,255,255,.2)}
+  .op-badge{display:flex; align-items:center; gap:8px; background:rgba(255,255,255,.10);
+    border:1px solid rgba(255,203,164,.22); padding:7px 13px; border-radius:999px}
+  .op-badge .who{font-size:13px} .op-badge .who b{font-weight:600}
+  .lock{font-size:10.5px; text-transform:uppercase; letter-spacing:.16em; color:var(--creme)}
+
+  main{max-width:1040px; margin:0 auto; padding:clamp(18px,3.5vw,34px) clamp(16px,4vw,34px) 60px}
+  .eyebrow{font-size:11px; text-transform:uppercase; letter-spacing:.2em; color:var(--coral); font-weight:600}
+  .eyebrow-row{display:flex; align-items:baseline; gap:12px; margin:6px 2px 16px}
+  .count{font-family:var(--serif); font-size:15px; color:var(--vinho); background:#fff; border:1px solid var(--line);
+    border-radius:999px; min-width:26px; text-align:center; padding:1px 9px}
+
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(248px,1fr)); gap:14px}
+  .ucard{text-align:left; font:inherit; color:inherit; cursor:pointer; background:var(--card); border:1px solid var(--line);
+    border-radius:18px; padding:16px; display:flex; align-items:center; gap:14px; box-shadow:var(--shadow);
+    transition:transform .16s ease, box-shadow .16s ease, border-color .16s ease}
+  .ucard:hover{transform:translateY(-3px); box-shadow:0 14px 30px rgba(53,1,0,.15); border-color:var(--creme)}
+  .ucard:focus-visible{outline:3px solid var(--coral); outline-offset:2px}
+  .ucard.sel{border-color:var(--coral); box-shadow:0 0 0 2px var(--coral) inset, var(--shadow)}
+  .avatar{width:46px; height:46px; border-radius:50%; flex:none; background:linear-gradient(135deg,var(--coral),var(--coral-2));
+    color:#fff; display:grid; place-items:center; font-weight:700; font-size:16px; letter-spacing:.5px}
+  .ucard-body{display:flex; flex-direction:column; gap:3px; min-width:0; flex:1}
+  .uname{font-weight:600; font-size:15px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .uaux{font-size:13px; color:var(--vinho); font-weight:500} .uaux b{font-family:var(--serif); font-weight:400}
+  .umeta{display:flex; flex-direction:column; align-items:flex-end; gap:5px; flex:none}
+  .chip{font-size:10.5px; font-weight:600; background:#fbeee6; color:var(--coral); border-radius:999px; padding:3px 9px; white-space:nowrap}
+  .chip.warn{background:#fdece7; color:var(--bad)}
+  .uip{font-size:10.5px; color:var(--muted)}
+  .empty{background:#fff; border:1px dashed var(--creme); border-radius:18px; padding:38px 20px; text-align:center; color:var(--muted)}
+  .empty .big{font-family:var(--serif); font-size:19px; color:var(--vinho); margin-bottom:6px}
+
+  .mix{background:var(--card); border-radius:22px; box-shadow:var(--shadow); border:1px solid var(--line); overflow:hidden; margin-bottom:26px}
+  .mix-head{display:flex; align-items:flex-start; gap:16px; flex-wrap:wrap; padding:20px 22px;
+    background:linear-gradient(120deg,var(--bordo),var(--vinho)); color:#fff}
+  .mix-head .eyebrow{color:var(--creme)}
+  .mix-title{font-family:var(--serif); font-weight:400; font-size:26px; margin:3px 0 2px}
+  .mix-aux{font-size:13px; color:var(--creme)}
+  .mix-tools{margin-left:auto; display:flex; align-items:center; gap:12px; flex-wrap:wrap}
+  .master{display:flex; align-items:center; gap:10px; background:rgba(255,255,255,.10); padding:8px 14px; border-radius:14px}
+  .master-label{font-size:10.5px; text-transform:uppercase; letter-spacing:.18em; color:var(--creme)}
+  .master-meter{position:relative; width:120px; height:10px; border-radius:6px; background:rgba(255,255,255,.18); overflow:hidden}
+  .master-meter i{display:block; height:100%; border-radius:6px; background:var(--marca)}
+  .master-val{font-family:var(--serif); font-size:16px; min-width:26px; text-align:right}
+  .btn-release{background:var(--coral); color:#fff}
+  .btn-release:hover{filter:brightness(1.06)}
+
+  .sends{padding:10px 12px 16px}
+  .readonly-note{padding:6px 14px 2px; font-size:12px; color:var(--muted)}
+  .send-row{display:grid; grid-template-columns:150px 1fr 42px; align-items:center; gap:14px; padding:8px 12px; border-radius:12px}
+  .send-row:hover{background:#faf4ee}
+  .send-name{font-size:13.5px; font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .meter{position:relative; height:12px; border-radius:7px; overflow:hidden;
+    background:linear-gradient(90deg,transparent 0 71.4%, rgba(53,1,0,.16) 71.4% 72.2%, transparent 72.2%), var(--track)}
+  .meter > i{display:block; height:100%; border-radius:7px; background:var(--marca); transition:width .18s ease}
+  .send-val{font-family:var(--serif); font-size:14px; color:var(--vinho); text-align:right}
+  .send-row.muted{opacity:.42} .send-row.muted .meter > i{background:var(--muted)}
+  .send-row.muted .send-name::after{content:' · mute'; color:var(--bad); font-weight:600; font-size:11px}
+
+  /* editable faders */
+  .meter.editable, .master-meter.editable{cursor:ew-resize; touch-action:none}
+  .meter.editable{overflow:visible}
+  .meter.editable > i{transition:none}
+  .meter.editable::after, .master-meter.editable::after{content:''; position:absolute; top:50%; left:var(--thumb,0%);
+    width:16px; height:16px; border-radius:50%; background:#fff; border:3px solid var(--coral);
+    transform:translate(-50%,-50%); box-shadow:0 2px 6px rgba(53,1,0,.3); pointer-events:none}
+  .master-meter.editable > i{transition:none}
+
+  .mesa-card{margin-top:26px; background:#fff; border:1px solid var(--line); border-radius:18px; padding:16px 20px;
+    display:flex; flex-wrap:wrap; gap:10px 30px; box-shadow:var(--shadow)}
+  .mesa-card .eyebrow{width:100%; margin-bottom:2px}
+  .kv{display:flex; flex-direction:column; gap:2px}
+  .kv .k{font-size:10.5px; text-transform:uppercase; letter-spacing:.12em; color:var(--muted)}
+  .kv .v{font-size:14px; font-weight:500}
+  footer{text-align:center; color:var(--muted); font-size:12px; padding:0 20px 40px}
+
+  /* QR modal */
+  .modal{position:fixed; inset:0; z-index:50; display:none; align-items:center; justify-content:center;
+    background:rgba(44,21,18,.55); padding:20px}
+  .modal.open{display:flex}
+  .modal-card{background:#fff; border-radius:22px; max-width:380px; width:100%; padding:26px; text-align:center; box-shadow:0 20px 60px rgba(53,1,0,.35)}
+  .modal-card .eyebrow{display:block; margin-bottom:6px}
+  .modal-card h2{font-family:var(--serif); font-weight:400; font-size:22px; margin:0 0 4px; color:var(--ink)}
+  .modal-card p{font-size:14px; color:var(--muted); margin:6px 0 0; line-height:1.5}
+  .qr-wrap{margin:18px auto; width:212px; height:212px; border-radius:16px; border:1px solid var(--line);
+    display:grid; place-items:center; overflow:hidden; background:#fff}
+  .qr-wrap img{width:100%; height:100%; display:block}
+  .qr-status{margin-top:14px; font-size:13px; color:var(--vinho); display:flex; align-items:center; gap:8px; justify-content:center}
+  .spin{width:12px; height:12px; border-radius:50%; border:2px solid var(--creme); border-top-color:var(--coral); animation:sp .8s linear infinite}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .modal-actions{margin-top:18px; display:flex; gap:10px; justify-content:center}
+  .btn-cancel{background:var(--bg); color:var(--ink); border-color:var(--line)}
+
+  @media (max-width:560px){ .send-row{grid-template-columns:110px 1fr 36px; gap:10px} .brand-sub{display:none} }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important} .spin{animation:none}}
+</style>
 </head>
 <body>
-<header>
-  <h1>🎛️ AudioMix Admin</h1>
-  <span class="ver">v{{ version }}</span>
-  <div class="mixer-status" id="mixerStatus">
-    <span class="dot" id="mixerDot"></span>
-    <span id="mixerText">conectando…</span>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 1000 569" role="img" aria-label="Maestro"><path fill="#fff" d="M732.15,568.65C716.45,567.09 702.18,563.03 688.08,556.12C662.52,543.59 641.79,522.78 628.55,496.39C616.00,471.36 609.06,439.16 609.06,405.95C609.06,384.97 611.16,367.41 616.26,345.64C633.15,273.65 682.81,193.15 745.45,136.22C811.36,76.31 893.30,38.50 982.03,27.07C986.63,26.47 992.49,25.96 995.04,25.92L999.68,25.85L1000.14,27.57C1000.74,29.77 1000.27,43.26 999.26,52.93C997.24,72.32 993.31,86.86 986.39,100.53C982.31,108.58 978.35,114.13 971.94,120.80C963.80,129.26 955.00,135.64 942.39,142.22C934.05,146.57 928.76,148.93 906.94,158.04C882.19,168.37 874.68,171.87 859.74,180.06C830.74,195.95 807.28,213.46 784.31,236.34C769.79,250.80 759.57,262.77 748.31,278.49C717.51,321.52 699.44,367.23 694.15,415.56C693.36,422.75 693.36,445.75 694.15,452.24C697.16,477.02 702.59,490.42 714.87,503.32C722.52,511.36 730.51,516.36 741.39,519.91C750.40,522.85 755.59,523.64 765.63,523.60C775.16,523.56 780.33,522.73 788.90,519.89C812.74,511.98 835.38,491.17 848.82,464.80C870.26,422.75 874.69,369.28 861.62,310.44C856.14,285.77 849.10,263.95 836.71,233.20C833.35,224.83 830.65,217.94 830.73,217.88C835.28,214.47 863.42,197.44 864.51,197.44C864.99,197.44 870.60,211.97 873.73,221.32C881.14,243.50 889.96,279.36 893.11,300.10C894.73,310.77 896.67,327.59 897.68,339.73C898.66,351.48 898.51,385.00 897.42,396.11C893.20,439.37 882.03,473.00 862.10,502.46C837.44,538.92 802.55,561.68 762.02,567.74C754.44,568.88 739.12,569.34 732.15,568.65ZM244.71,567.90C243.76,567.79 240.77,567.46 238.06,567.18C215.48,564.80 194.37,555.81 174.85,540.25C168.22,534.96 156.72,523.32 150.78,515.89C132.33,492.80 118.93,465.03 111.27,434.02C98.37,381.81 101.56,316.30 120.20,251.11C124.07,237.55 137.66,197.46 138.38,197.44C139.98,197.42 169.39,216.39 173.44,220.06C173.65,220.25 171.07,225.81 167.70,232.43C155.66,256.08 148.58,274.29 142.76,296.65C134.44,328.56 131.14,366.92 134.19,396.27C136.82,421.73 142.96,444.00 152.87,464.06C160.29,479.07 167.21,488.79 177.60,498.79C185.04,505.94 190.96,510.16 199.66,514.49C207.21,518.26 213.37,520.44 220.65,521.92C252.10,528.34 276.95,518.68 293.17,493.73C301.13,481.49 306.54,465.29 308.27,448.57C309.39,437.78 308.32,418.22 305.76,402.41C292.68,321.66 239.64,243.43 163.96,193.25C144.48,180.34 132.47,174.05 101.92,160.77C60.26,142.65 43.94,133.37 30.52,120.14C14.96,104.80 5.76,84.89 1.96,58.35C0.65,49.22 0.00,40.47 0.00,31.91L0.00,24.49L2.09,24.83C3.24,25.01 11.28,26.05 19.94,27.12C36.80,29.22 46.22,30.70 57.61,33.04C150.23,52.13 241.22,109.57 305.55,189.56C368.46,267.79 399.75,356.32 390.68,430.38C382.23,499.27 350.26,544.53 297.88,561.71C284.98,565.95 273.67,567.71 258.00,567.94C251.64,568.03 245.65,568.01 244.71,567.90ZM488.35,446.31C458.34,441.64 439.62,412.20 437.91,366.97C436.67,334.27 448.40,277.35 467.62,222.80C494.82,145.56 534.20,79.24 574.61,42.57C600.87,18.75 625.49,5.91 653.11,1.62C660.75,0.44 676.78,0.46 684.15,1.66C713.64,6.48 740.00,20.96 767.41,47.41C779.04,58.62 795.30,76.92 794.39,77.76C794.14,77.98 789.51,81.10 784.10,84.69C771.00,93.38 764.59,97.98 756.74,104.29C753.15,107.19 749.75,109.92 749.18,110.37C748.18,111.15 747.99,111.04 743.47,106.97C732.05,96.67 720.58,89.66 708.54,85.64C672.14,73.47 634.63,85.25 600.23,119.65C579.17,140.72 561.69,166.07 533.87,215.89L531.41,220.31L533.36,225.00C543.59,249.52 552.90,279.83 558.04,305.38C562.84,329.21 565.53,358.62 564.26,373.34C562.40,394.96 557.95,410.51 550.16,422.60C546.94,427.58 540.41,434.08 535.54,437.13C523.85,444.44 502.74,448.55 488.35,446.31ZM504.88,413.12C522.38,401.08 523.91,366.91 509.34,313.66C506.24,302.34 503.85,295.39 501.95,292.14C500.96,290.45 500.51,290.04 500.22,290.56C499.31,292.19 493.03,313.81 490.16,325.21C485.09,345.34 483.13,357.62 482.68,371.98C482.13,390.01 485.22,401.53 492.60,408.94C495.48,411.84 499.98,414.57 501.85,414.57C502.36,414.57 503.72,413.92 504.88,413.12ZM455.58,190.69C453.43,187.77 446.95,178.62 441.18,170.36C423.03,144.36 413.35,132.09 402.31,121.12C381.05,99.98 359.13,86.92 337.03,82.22C330.76,80.89 317.31,80.36 310.93,81.21C292.61,83.62 274.89,92.70 258.69,107.97L254.71,111.73L248.95,107.13C241.34,101.04 231.59,94.21 218.37,85.69C212.41,81.85 207.33,78.52 207.09,78.28C206.22,77.42 223.28,57.89 234.19,47.26C261.51,20.65 289.03,6.16 321.27,1.44C334.81,-0.55 349.83,0.31 361.86,3.75C396.07,13.54 430.92,40.98 462.46,82.96C472.26,96.01 483.65,113.85 489.49,125.31L491.50,129.25L484.33,143.28C476.35,158.92 470.80,170.54 464.04,185.77L459.49,196.01L455.58,190.69Z"/></svg>
+    </span>
+    <div class="brand-text">
+      <span class="brand-name">AudioMix</span>
+      <span class="brand-sub">Sistema de Retorno</span>
+    </div>
+  </div>
+  <div class="top-right">
+    <div class="mesa"><span class="dot" id="mesaDot"></span><span id="mesaText">conectando…</span></div>
+    <div class="authchip" id="authChip"></div>
+    <span class="ver">v{{ version }}</span>
   </div>
 </header>
 
-<section class="card">
-  <h2>Mesa</h2>
-  <table class="kv">
-    <tr><th>Status</th><td id="mxConnected">—</td></tr>
-    <tr><th>Host</th><td id="mxHost">—</td></tr>
-    <tr><th>Nome</th><td id="mxName">—</td></tr>
-    <tr><th>Serial</th><td id="mxSerial">—</td></tr>
-    <tr><th>State keys</th><td id="mxKeys">—</td></tr>
-    <tr><th>Falhas de conexão</th><td id="mxFails">—</td></tr>
-    <tr><th>Último erro</th><td id="mxError">—</td></tr>
-  </table>
-</section>
+<main>
+  <section class="mix" id="mixSection" hidden>
+    <div class="mix-head">
+      <div>
+        <span class="eyebrow">Monitor de</span>
+        <h2 class="mix-title" id="mixName">—</h2>
+        <span class="mix-aux" id="mixAux">—</span>
+      </div>
+      <div class="mix-tools">
+        <div class="master">
+          <span class="master-label">Master</span>
+          <div class="master-meter" id="masterMeter"><i id="masterFill" style="width:0"></i></div>
+          <span class="master-val" id="masterVal">0</span>
+        </div>
+        <button class="btn btn-ghost" id="closeBtn">Fechar</button>
+        <button class="btn btn-release" id="releaseBtn" hidden>Liberar aux</button>
+      </div>
+    </div>
+    <div class="readonly-note" id="roNote" hidden>Somente leitura — entre como operador para editar.</div>
+    <div class="sends" id="sends"></div>
+  </section>
 
-<section class="card">
-  <h2>Sessões ativas <span id="sessCount" class="pill">0</span></h2>
-  <table class="sessions">
-    <thead>
-      <tr>
-        <th>Aux</th><th>Nome do aux</th><th>Usuário</th><th>IP</th>
-        <th>Desde</th><th>Expira em</th><th></th>
-      </tr>
-    </thead>
-    <tbody id="sessBody">
-      <tr><td colspan="7" class="muted">sem sessões ativas</td></tr>
-    </tbody>
-  </table>
-</section>
+  <section class="users">
+    <div class="eyebrow-row">
+      <span class="eyebrow">Músicos conectados</span>
+      <span class="count" id="userCount">0</span>
+    </div>
+    <div class="grid" id="userGrid"></div>
+    <div class="empty" id="userEmpty" hidden>
+      <div class="big">Nenhum músico conectado</div>
+      Quando alguém abrir o retorno pelo Maestro e assumir um aux, aparece aqui.
+    </div>
+  </section>
 
-<footer>
-  <span class="muted">auto-refresh 1s · admin só aceita conexões de localhost</span>
-</footer>
+  <section class="mesa-card">
+    <span class="eyebrow">Mesa</span>
+    <div class="kv"><span class="k">Console</span><span class="v" id="mxName">—</span></div>
+    <div class="kv"><span class="k">Host</span><span class="v" id="mxHost">—</span></div>
+    <div class="kv"><span class="k">Serial</span><span class="v" id="mxSerial">—</span></div>
+    <div class="kv"><span class="k">Parâmetros</span><span class="v" id="mxKeys">—</span></div>
+  </section>
+</main>
+
+<footer>Atualiza a cada 1,5&nbsp;s · acesso pela rede local</footer>
+
+<div class="modal" id="qrModal">
+  <div class="modal-card">
+    <span class="eyebrow">Entrar como operador</span>
+    <h2>Escaneie com o celular</h2>
+    <p>Abra a <b>câmera do seu celular</b> e aponte para o código. O Maestro autentica você — sem digitar senha.</p>
+    <div class="qr-wrap"><img id="qrImg" alt="QR de pareamento"></div>
+    <div class="qr-status" id="qrStatus"><span class="spin"></span> aguardando confirmação…</div>
+    <div class="modal-actions"><button class="btn btn-cancel" id="qrCancel">Cancelar</button></div>
+  </div>
+</div>
 
 <script>
-async function tick() {
-  try {
-    const r = await fetch('/admin/api/status');
-    const d = await r.json();
-    const mx = d.mixer || {};
-    document.getElementById('mixerDot').className = 'dot ' + (mx.connected ? 'ok' : 'bad');
-    document.getElementById('mixerText').textContent = mx.connected ? 'mesa conectada' : 'mesa desconectada';
-    document.getElementById('mxConnected').textContent = mx.connected ? '✅ online' : '❌ offline';
-    document.getElementById('mxHost').textContent = (mx.host ?? '—') + (mx.port ? ':' + mx.port : '');
-    document.getElementById('mxName').textContent = mx.name ?? '—';
-    document.getElementById('mxSerial').textContent = mx.serial ?? '—';
-    document.getElementById('mxKeys').textContent = mx.state_keys ?? '—';
-    document.getElementById('mxFails').textContent = mx.connect_failures ?? 0;
-    document.getElementById('mxError').textContent = mx.last_error ?? '—';
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const initials = n => (String(n||'?').trim().split(/\s+/).map(w=>w[0]).slice(0,2).join('') || '?').toUpperCase();
+const pct = l => Math.max(0, Math.min(100, Math.round((l||0)*100)));
+const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
 
-    const sess = d.sessions || [];
-    document.getElementById('sessCount').textContent = sess.length;
-    const tb = document.getElementById('sessBody');
-    if (!sess.length) {
-      tb.innerHTML = '<tr><td colspan="7" class="muted">sem sessões ativas</td></tr>';
-    } else {
-      tb.innerHTML = sess.map(s => `
-        <tr>
-          <td><b>${s.aux_number}</b></td>
-          <td>${escape(s.aux_name)}</td>
-          <td>${escape(s.user_name)}<br><span class="muted">${escape(s.user_id)}</span></td>
-          <td>${escape(s.client_ip)}</td>
-          <td>${new Date(s.claimed_at).toLocaleTimeString()}</td>
-          <td>${s.expires_in}s</td>
-          <td><button onclick="kick(${s.aux_number})">kick</button></td>
-        </tr>`).join('');
-    }
-  } catch (e) {
-    document.getElementById('mixerText').textContent = 'erro comunicação: ' + e.message;
+let authed = false, opName = '';
+let selectedAux = null, selectedName = '';
+let mixKey = '';            // aux + auth mode currently rendered
+let dragging = null;        // element being dragged (skip refresh on it)
+let pairPid = null, pairTimer = null;
+
+/* ---------- status + auth ---------- */
+async function refresh(){
+  try{
+    const [st, se] = await Promise.all([
+      fetch('/admin/api/status').then(r=>r.json()),
+      fetch('/admin/api/session').then(r=>r.json()),
+    ]);
+    authed = !!se.authenticated; opName = se.user_name || '';
+    renderMixer(st.mixer || {});
+    renderAuth();
+    renderUsers(st.sessions || []);
+    if(selectedAux != null) await refreshMix();
+  }catch(e){ $('mesaText').textContent = 'erro de comunicação'; }
+}
+
+function renderAuth(){
+  const c = $('authChip');
+  if(authed){
+    c.innerHTML = `<div class="op-badge"><span class="who">Operador: <b>${esc(opName)}</b></span></div>
+      <button class="btn btn-ghost" id="logoutBtn">Sair</button>`;
+    $('logoutBtn').onclick = logout;
+  } else {
+    c.innerHTML = `<span class="lock">Somente leitura</span>
+      <button class="btn btn-enter" id="enterBtn">Entrar para editar</button>`;
+    $('enterBtn').onclick = openPair;
   }
 }
-function escape(s){ return String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
-async function kick(aux) {
-  if (!confirm('Liberar aux ' + aux + '?')) return;
-  await fetch('/admin/api/release/' + aux, {method: 'POST'});
-  tick();
+
+function renderMixer(mx){
+  const ok = !!mx.connected;
+  $('mesaDot').className = 'dot ' + (ok ? 'ok' : 'bad');
+  $('mesaText').textContent = ok ? ('Mesa · ' + (mx.name || 'conectada')) : 'Mesa desconectada';
+  $('mxName').textContent = mx.name ?? '—';
+  $('mxHost').textContent = (mx.host ?? '—') + (mx.port ? ':' + mx.port : '');
+  $('mxSerial').textContent = mx.serial ?? '—';
+  $('mxKeys').textContent = mx.state_keys != null ? mx.state_keys.toLocaleString('pt-BR') : '—';
 }
-setInterval(tick, 1000); tick();
+
+function renderUsers(sessions){
+  $('userCount').textContent = sessions.length;
+  const grid = $('userGrid'), empty = $('userEmpty');
+  if(!sessions.length){ grid.innerHTML=''; empty.hidden=false; return; }
+  empty.hidden=true;
+  grid.innerHTML = sessions.map(s => {
+    const warn = s.expires_in <= 5 ? ' warn' : '';
+    const sel = s.aux_number === selectedAux ? ' sel' : '';
+    return `<button class="ucard${sel}" data-aux="${s.aux_number}" data-name="${esc(s.user_name)}">
+      <span class="avatar">${esc(initials(s.user_name))}</span>
+      <span class="ucard-body">
+        <span class="uname">${esc(s.user_name)}</span>
+        <span class="uaux">Aux ${s.aux_number} · <b>${esc(s.aux_name)}</b></span>
+      </span>
+      <span class="umeta"><span class="chip${warn}">expira ${s.expires_in}s</span><span class="uip">${esc(s.client_ip)}</span></span>
+    </button>`;
+  }).join('');
+  grid.querySelectorAll('.ucard').forEach(el =>
+    el.addEventListener('click', () => selectAux(+el.dataset.aux, el.dataset.name)));
+}
+
+/* ---------- aux monitor ---------- */
+function selectAux(aux, name){
+  selectedAux = aux; selectedName = name || ''; mixKey = '';
+  $('mixSection').hidden = false;
+  document.querySelectorAll('.ucard').forEach(el => el.classList.toggle('sel', +el.dataset.aux === aux));
+  refreshMix().then(()=> $('mixSection').scrollIntoView({behavior:'smooth', block:'start'}));
+}
+function closeMix(){
+  selectedAux = null; mixKey='';
+  $('mixSection').hidden = true;
+  document.querySelectorAll('.ucard.sel').forEach(el => el.classList.remove('sel'));
+}
+
+async function refreshMix(){
+  let m;
+  try{ m = await fetch('/admin/api/aux/' + selectedAux).then(r=>r.json()); }catch(e){ return; }
+  if(!m || !m.channels){ return; }
+  $('mixName').textContent = selectedName || (m.holder && m.holder.user_name) || m.aux_name;
+  $('mixAux').textContent = `Aux ${m.aux_number} · ${m.aux_name}`;
+  $('roNote').hidden = authed;
+  $('releaseBtn').hidden = !authed;
+  $('releaseBtn').onclick = () => release(m.aux_number);
+
+  const key = m.aux_number + '|' + authed + '|' + m.channels.length;
+  if(key !== mixKey){ buildMix(m); mixKey = key; }
+  else updateMix(m);
+}
+
+function buildMix(m){
+  // master
+  const mm = $('masterMeter');
+  mm.classList.toggle('editable', authed);
+  if(authed) attachFader(mm, v => sendMaster(m.aux_number, v));
+  else mm.onpointerdown = null;
+
+  $('sends').innerHTML = m.channels.map(c =>
+    `<div class="send-row${c.mute?' muted':''}" data-ch="${c.channel}">
+       <span class="send-name">${esc(c.name)}</span>
+       <span class="meter${authed?' editable':''}"><i></i></span>
+       <span class="send-val">0</span>
+     </div>`).join('');
+  $('sends').querySelectorAll('.send-row').forEach(row => {
+    const ch = +row.dataset.ch, meter = row.querySelector('.meter');
+    if(authed) attachFader(meter, v => sendChannel(m.aux_number, ch, v));
+  });
+  updateMix(m);
+}
+
+function setFill(meter, p){
+  meter.querySelector('i').style.width = p + '%';
+  if(meter.classList.contains('editable')) meter.style.setProperty('--thumb', p + '%');
+}
+
+function updateMix(m){
+  const mv = pct(m.master_level);
+  if($('masterMeter') !== dragging){ setFill($('masterMeter'), mv); $('masterVal').textContent = mv; }
+  const rows = $('sends').children;
+  m.channels.forEach((c, i) => {
+    const row = rows[i]; if(!row) return;
+    row.classList.toggle('muted', !!c.mute);
+    const meter = row.querySelector('.meter');
+    const p = pct(c.level);
+    if(meter !== dragging){ setFill(meter, p); row.querySelector('.send-val').textContent = p; }
+  });
+}
+
+/* ---------- editing (drag faders) ---------- */
+function attachFader(meter, onValue){
+  let deb = null;
+  const levelFromEvent = e => {
+    const r = meter.getBoundingClientRect();
+    return clamp(Math.round((e.clientX - r.left) / r.width * 100), 0, 100);
+  };
+  const apply = (p, flush) => {
+    setFill(meter, p);
+    const valEl = meter.parentElement.querySelector('.send-val, .master-val')
+                 || (meter.id==='masterMeter' ? $('masterVal') : null);
+    if(valEl) valEl.textContent = p;
+    if(flush){ if(deb){clearTimeout(deb); deb=null;} onValue(p); }
+    else { if(deb) clearTimeout(deb); deb = setTimeout(()=>{ onValue(p); deb=null; }, 110); }
+  };
+  meter.onpointerdown = e => {
+    e.preventDefault(); dragging = meter; meter.setPointerCapture(e.pointerId);
+    apply(levelFromEvent(e), false);
+  };
+  meter.onpointermove = e => { if(dragging === meter) apply(levelFromEvent(e), false); };
+  const end = e => { if(dragging === meter){ apply(levelFromEvent(e), true); dragging = null; } };
+  meter.onpointerup = end; meter.onpointercancel = end;
+}
+
+async function sendChannel(aux, ch, level){
+  try{ await postWrite(`/admin/api/aux/${aux}/send`, {source_channel: ch, level}); }catch(e){ handleWriteErr(e); }
+}
+async function sendMaster(aux, level){
+  try{ await postWrite(`/admin/api/aux/${aux}/master`, {level}); }catch(e){ handleWriteErr(e); }
+}
+async function postWrite(path, body){
+  const r = await fetch(path, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)});
+  if(!r.ok) throw r;
+}
+function handleWriteErr(r){
+  if(r && r.status === 401){ authed=false; renderAuth(); mixKey=''; refresh(); }
+}
+
+async function release(aux){
+  if(!confirm('Liberar o Aux ' + aux + '? O músico perde o controle do retorno.')) return;
+  try{ await postWrite('/admin/api/release/' + aux, undefined); }catch(e){ handleWriteErr(e); return; }
+  closeMix(); refresh();
+}
+
+/* ---------- pairing (QR) ---------- */
+async function openPair(){
+  try{
+    const j = await fetch('/admin/auth/pair/new', {method:'POST'}).then(r=>r.json());
+    pairPid = j.pid;
+    $('qrImg').src = `/admin/auth/pair/${pairPid}/qr.svg`;
+    $('qrStatus').innerHTML = '<span class="spin"></span> aguardando confirmação…';
+    $('qrModal').classList.add('open');
+    clearInterval(pairTimer);
+    pairTimer = setInterval(pollPair, 1500);
+  }catch(e){ alert('Não foi possível gerar o código. Tente de novo.'); }
+}
+async function pollPair(){
+  if(!pairPid) return;
+  let j; try{ j = await fetch('/admin/auth/pair/' + pairPid).then(r=>r.json()); }catch(e){ return; }
+  if(j.status === 'authorized'){
+    clearInterval(pairTimer); pairTimer = null;
+    $('qrStatus').innerHTML = '✓ autenticado';
+    setTimeout(closePair, 700);
+    mixKey = ''; refresh();
+  } else if(j.status === 'expired'){
+    clearInterval(pairTimer); pairTimer = null;
+    $('qrStatus').innerHTML = 'código expirou · <a href="#" id="regen">gerar novo</a>';
+    const rg = $('regen'); if(rg) rg.onclick = ev => { ev.preventDefault(); openPair(); };
+  }
+}
+function closePair(){ $('qrModal').classList.remove('open'); clearInterval(pairTimer); pairTimer=null; pairPid=null; }
+
+async function logout(){
+  try{ await fetch('/admin/auth/logout', {method:'POST'}); }catch(e){}
+  authed=false; mixKey=''; refresh();
+}
+
+$('closeBtn').addEventListener('click', closeMix);
+$('qrCancel').addEventListener('click', closePair);
+setInterval(refresh, 1500);
+refresh();
 </script>
 </body>
 </html>

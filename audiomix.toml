@@ -1,3 +1,14 @@
+[server]
+allowed_cors_origins = [
+  "https://app.maestro.mus.br",
+  "https://maestro.mus.br",
+  "https://ipb.app.br",
+  "https://www.ipb.app.br",
+  "https://maestro.ipbrecreio.org.br",
+  "http://localhost:3000",
+  "http://localhost:5173",
+]
+
 [tls]
 cert_file = "C:\\audiomix.ipb.app.br-chain.pem"
 key_file  = "C:\\audiomix.ipb.app.br-key.pem"
