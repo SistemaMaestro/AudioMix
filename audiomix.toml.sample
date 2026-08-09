@@ -17,6 +17,15 @@ allowed_cors_origins = [
 host = ""
 port = 53000
 discovery_timeout_seconds = 8.0
+# Mesa ausente (desligada): varredura branda, 15s dobrando até 2min.
+idle_retry_min_seconds = 15.0
+idle_retry_max_seconds = 120.0
+# Conexão que existia e caiu: religa rápido, 1s dobrando até 30s.
+reconnect_retry_min_seconds = 1.0
+reconnect_retry_max_seconds = 30.0
+# Conexão precisa durar isso para contar como boa e zerar a escada rápida.
+stable_connection_seconds = 30.0
+retry_jitter_pct = 0.15
 
 [maestro]
 base_url = "https://api.ipb.app.br/api"

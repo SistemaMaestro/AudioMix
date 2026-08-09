@@ -89,6 +89,9 @@ async def admin_status(
             "connect_failures": mixer.connect_failures,
             "last_error": mixer.last_error,
             "state_keys": len(mixer.state),
+            "discovery_misses": mixer.discovery_misses,
+            "mixer_absent_since": mixer.mixer_absent_since,
+            "next_retry_seconds": mixer.next_retry_seconds,
         },
         "sessions": [
             {

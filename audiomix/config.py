@@ -39,6 +39,19 @@ class MixerConfig(BaseModel):
     host: str = ""  # vazio = auto-discovery UDP
     port: int = 53000
     discovery_timeout_seconds: float = 8.0
+    # Espera entre varreduras quando a mesa está simplesmente ausente (desligada
+    # fora de culto é o estado normal). Cresce de min até max e fica lá.
+    idle_retry_min_seconds: float = 15.0
+    idle_retry_max_seconds: float = 120.0
+    # Espera para religar uma conexão que existia e caiu — aqui a pressa importa.
+    reconnect_retry_min_seconds: float = 1.0
+    reconnect_retry_max_seconds: float = 30.0
+    # Quanto uma conexão precisa durar para contar como "boa" e zerar a escada
+    # rápida. Abaixo disso é flap (conecta e cai), e a escada continua subindo.
+    stable_connection_seconds: float = 30.0
+    # Jitter (fração do intervalo) aplicado a toda espera, para não sincronizar
+    # varreduras entre instâncias nem bater sempre no mesmo instante do relógio.
+    retry_jitter_pct: float = 0.15
 
 
 class MaestroConfig(BaseModel):
